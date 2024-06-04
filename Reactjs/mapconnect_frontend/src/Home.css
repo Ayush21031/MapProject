@@ -1,0 +1,68 @@
+/* Set background image */
+body {
+    background-image: url("D:\Development\MapConnect\Reactjs\mapconnect_frontend\13295064_5172658.jpg");
+    background-size: cover;
+    background-position: center;
+    backdrop-filter: blur(3px);
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;  
+  }
+  
+  /* Transparent navbar */
+  nav {
+    /* background-color: rgba(255, 255, 255, 0.3); */
+    backdrop-filter: blur(3px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .navbar-logo a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .navbar-links {
+    /* Add styles for additional navigation links */
+  }
+  
+  
+  /* Home content */
+  .home-content {
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .home-content h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+.login{
+    background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 1em 2em;
+  text-align: center;
+  text-decoration: none;
+  /* display: inline-block; */
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 2em;
+}
+
+.login:hover{
+    background-color: #fff;
+    /* text-emphasis-color: black; */
+    color: black;
+}
