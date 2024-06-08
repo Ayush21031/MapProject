@@ -10,7 +10,8 @@ exports.register = (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        rooms: []
     });
     // const token = jwt.sign({"email": req.body.email, "password": req.body.password}, "secretkey");
     const private_key = FileSystem.readFileSync('./private.key', 'utf8');
@@ -46,7 +47,7 @@ exports.login = (req, res) => {
         if(isAuth){
             // res.send("Logined successfully");
             //send Logined Successfully in json format
-            res.send({message: "Logined Successfully", token: data.token});
+            res.send({message: "Logined Successfully", token: data.token, roomlist: data.rooms});
         }
         else{
             res.send({message:"Password is incorrect"});

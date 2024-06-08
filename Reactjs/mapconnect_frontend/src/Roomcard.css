@@ -1,0 +1,36 @@
+.roomcard {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+  }
+  
+  .roomcard__info {
+    margin-bottom: 10px;
+  }
+  
+  .roomcard__info h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+  
+  .roomcard__info p {
+    margin: 0;
+    color: #666;
+  }
+  
+  .roomcard__buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .roomcard__buttons button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }

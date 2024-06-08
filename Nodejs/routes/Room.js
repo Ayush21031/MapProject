@@ -1,18 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controller/user');
+const roomController = require('../controller/room');
 const jwt = require('jsonwebtoken');
 const FileSystem = require('fs');
-
 
 const public_key = FileSystem.readFileSync('./public.key', 'utf8');
 const auth = (req, res, next) => {
     // const token = req.headers.token;
     const header = req.get('Authorization');
     console.log(header);
-    if(!header) return res.status(403).send({
-        message: "No token provided!"
-    });
     const token = header.split(' ')[1];
     console.log(token,"this is token");
     if (!token) {
@@ -33,11 +29,10 @@ const auth = (req, res, next) => {
     });
 }
 
-router.post('/login', userController.login);
 
-router.post('/register', userController.register);
-
-router.get('/userdetail',auth ,userController.userdetail);
-
+router.post('/create', roomController.create);
+router.post('/join', roomController.join);
+router.post('/getlist', roomController.getlist);
+// router.post('/roomhandle', roomController.roomhandle);
 
 exports.router = router;

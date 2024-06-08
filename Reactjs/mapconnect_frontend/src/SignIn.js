@@ -46,7 +46,12 @@ const SignIn = () => {
         //const token = result.token;
         localStorage.setItem('token', result.token);
         localStorage.setItem('email', formData.email);
-        navigate('/user', { state: { username: formData.username } });
+        navigate('/user', { state: { username: formData.email , rooms: result.roomlist} });
+      }
+
+      //result.message starting with Error retrieving user with email)
+      else if(result.message.startsWith("User not found with email")){
+        alert("User not found. Please sign up first")
       }
     } catch (error) {
       console.error('Error:', error);
