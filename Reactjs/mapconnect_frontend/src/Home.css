@@ -1,6 +1,6 @@
 /* Set background image */
 body {
-    background-image: url("D:\Development\MapConnect\Reactjs\mapconnect_frontend\13295064_5172658.jpg");
+    /* background-image: url("D:\Development\MapConnect\Reactjs\mapconnect_frontend\13295064_5172658.jpg"); */
     background-size: cover;
     background-position: center;
     backdrop-filter: blur(3px);
