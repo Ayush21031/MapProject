@@ -57,7 +57,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import Home from "./Home";
-import UserPage from "./UserPage";
+import UserPage from "./users/UserPage";
 import { UserProvider } from "./context/UserContext";
 
 const AppRoutes = () => {
