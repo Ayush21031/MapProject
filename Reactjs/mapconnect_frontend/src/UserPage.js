@@ -144,14 +144,99 @@
 // export default UserPage;
 
 
-import React, { useState } from "react";
+// UserPage.js
+// import React from "react";
+// import { useUser } from "./context/UserContext";
+
+// const UserPage = () => {
+//   const { user, loading } = useUser();
+
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+
+//   if (!user) {
+//     return <div>Failed to load user data.</div>;
+//   }
+
+//   return (
+//     <div>
+//       <h1>Welcome to User Page</h1>
+//       <p>First Name: {user.firstName}</p>
+//       <p>Last Name: {user.lastName}</p>
+//       <p>Email: {user.email}</p>
+//     </div>
+//   );
+// };
+
+// export default UserPage;
+
+
+
+// import React, { useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { useUser } from "./context/UserContext";
+
+// const UserPage = () => {
+//   const { user, loading } = useUser();
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     if (!loading && !user) {
+//       navigate("/login");
+//     }
+//   }, [loading, user, navigate]);
+
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+
+//   if (!user) {
+//     return null;
+//   }
+
+//   return (
+//     <div>
+//       <h1>Welcome to User Page</h1>
+//       <p>First Name: {user.firstName}</p>
+//       <p>Last Name: {user.lastName}</p>
+//       <p>Email: {user.email}</p>
+//     </div>
+//   );
+// };
+
+// export default UserPage;
+import React, { useContext, useEffect } from 'react';
+import { UserContext } from './context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const UserPage = () => {
+  const { userToken, userData, fetchUserData } = useContext(UserContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userToken) {
+      console.log("Fetching data in UserPage")
+      fetchUserData();
+    }
+  }, [userToken, fetchUserData]);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+  if(userData.message === "Unauthorized!"){
+    navigate("/login");
+  }
   return (
     <div>
-      <h1>Welcome to User Page</h1>
+      <h1>Welcome, {userData.firstName} {userData.lastName}</h1>
+      <p>Email: {userData.email}</p>
     </div>
   );
 }
 
 export default UserPage;
+
+
+
+
+

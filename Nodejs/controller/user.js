@@ -86,7 +86,7 @@ const bcrypt = require('bcrypt');
 const private_key = FileSystem.readFileSync('./private.key', 'utf8');
 
 const createToken = (email) => {
-    return jwt.sign({ "email": email }, private_key, { algorithm: 'RS256', expiresIn: '7d' });
+    return jwt.sign({ "email": email }, private_key, { algorithm: 'RS256', expiresIn: '1min' });
 }
 
 exports.register = (req, res) => {

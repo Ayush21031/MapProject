@@ -1,81 +1,81 @@
-// import React, { createContext, useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
+// import React, { createContext, useState, useContext, useEffect } from "react";
 
-// export const UserContext = createContext();
+// const UserContext = createContext();
 
 // export const UserProvider = ({ children }) => {
-//     const [user, setUser] = useState(null);
-//     const navigate = useNavigate();
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
 
-//     useEffect(() => {
-//         const fetchUserDetails = async () => {
-//             try {
-//                 const response = await fetch('http://localhost:3000/user/userdetail', {
-//                     method: 'GET',
-//                     credentials: 'include',
-//                 });
-                
-//                 if (response.ok) {
-//                     const data = await response.json();
-//                     setUser(data);
-//                 } else {
-//                     if (response.status === 401 || response.status === 403) {
-//                         navigate('/login');
-//                     }
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching user details:', error);
-//             }
-//         };
+//   const fetchUser = async () => {
+//     try {
+//       const response = await fetch("http://localhost:3000/user/userdetail", {
+//         method: "GET",
+//         credentials: "include",
+//       });
+      
+//       if (!response.ok) {
+//         throw new Error("Failed to fetch user details");
+//       }
 
-//         fetchUserDetails();
-//     }, [navigate]);
+//       const data = await response.json();
+//       setUser(data);
+//     } catch (error) {
+//       console.error("Failed to fetch user details:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-//     return (
-//         <UserContext.Provider value={{ user, setUser }}>
-//             {children}
-//         </UserContext.Provider>
-//     );
+//   useEffect(() => {
+//     fetchUser();
+//   }, []);
+
+//   return (
+//     <UserContext.Provider value={{ user, loading }}>
+//       {children}
+//     </UserContext.Provider>
+//   );
 // };
 
-
+// export const useUser = () => useContext(UserContext);
 
 import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
+  const [userToken, setUserToken] = useState(null);
+  const [userData, setUserData] = useState(null);
 
-    useEffect(() => {
-        const fetchUserDetails = async () => {
-            try {
-                const response = await fetch('http://localhost:3000/user/userdetail', {
-                    method: 'GET',
-                    credentials: 'include',
-                });
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/user/userdetail', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data);
-                } else {
-                    if (response.status === 401 || response.status === 403) {
-                        navigate('/login');
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user details:', error);
-            }
-        };
+      const result = await response.json();
+      setUserData(result);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
-        fetchUserDetails();
-    }, [navigate]);
+  useEffect(() => {
+    // if (userToken) {
+    //   fetchUserData();
+    // }
+    fetchUserData();
+  }, [userToken]);
 
-    return (
-        <UserContext.Provider value={{ user, setUser }}>
-            {children}
-        </UserContext.Provider>
-    );
+  return (
+    <UserContext.Provider value={{ userToken, setUserToken, userData, fetchUserData }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
+
+
