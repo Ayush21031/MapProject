@@ -9,15 +9,25 @@ import { data_contact, data_chats } from "./data";
 import UserCard from "./userCard";
 import ChatBubble from "./chatBubble";
 import ChatHeader from "./chatHeader";
+import AddPersonPopup from "./AddPersonPopup"; // Import the AddPersonPopup component
+
 
 const UserPage = () => {
   const { userData, fetchUserData } = useContext(UserContext);
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserChats, setSelectedUserChats] = useState([]);
   const [isFading, setIsFading] = useState(false);
 
+  const handleAddPersonClick = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
@@ -53,7 +63,7 @@ const UserPage = () => {
   return (
     <div className="main-div">
       <div className="function-button-column">
-        <button className="add-person">
+        <button className="add-person" onClick={handleAddPersonClick}>
           <IoMdPersonAdd />
         </button>
         <button className="logout">
@@ -62,9 +72,11 @@ const UserPage = () => {
       </div>
 
       <div className="chatlist-column">
+      <div className="inner-chatlist-column">
         {data_contact.map((contact, index) => (
           <UserCard key={index} index={index} contact={contact} onClick={() => handleUserCardClick(contact)} />
         ))}
+      </div>
       </div>
 
       <div className="chat-column">
@@ -97,6 +109,8 @@ const UserPage = () => {
           </div>
         )}
       </div>
+            {showPopup && <AddPersonPopup onClose={handleClosePopup} />}
+
     </div>
   );
 };
