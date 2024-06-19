@@ -3,10 +3,13 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from './context/UserContext';
 import './SignIn.css';
+import Cookies from 'js-cookie';
+
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { setUserToken } = useContext(UserContext); 
+  // const { setUserToken } = useContext(UserContext); 
+  const { fetchUserData } = useContext(UserContext);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -41,8 +44,10 @@ const SignIn = () => {
       const result = await response.json();
       console.log('Server response:', result);
       if (result.message === "Logined Successfully") {
-        setUserToken(result.data.token); 
-        console.log("Token is -: ", result.data.token)
+        // setUserToken(result.data.token); 
+        Cookies.set('token', result.data.token);
+        fetchUserData();
+        // console.log("Token is -: ", result.data.token)
         navigate('/user');
       } else if (result.message.startsWith("User not found with email")) {
         alert("User not found. Please sign up first");

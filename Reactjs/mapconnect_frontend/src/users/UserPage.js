@@ -33,6 +33,26 @@ const UserPage = () => {
   //   navigate("/login");
   // }
 
+
+  const { userData, fetchUserData } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
+  if(!userData.firstName){
+    navigate("/login");
+  }
+
+  if (userData.message === "Unauthorized!") {
+    navigate("/login");
+  }
+
   let chats = data_chats
   let contact = data_contact
 
