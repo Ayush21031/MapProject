@@ -1,0 +1,36 @@
+/* SearchPersonCard.css */
+.person-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .person-card-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .person-card-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .person-card-email {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .person-card-add-btn {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

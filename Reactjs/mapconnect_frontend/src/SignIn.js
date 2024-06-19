@@ -42,6 +42,7 @@ const SignIn = () => {
       });
 
       const result = await response.json();
+      console.log('bukachuda', response)
       console.log('Server response:', result);
       if (result.message === "Logined Successfully") {
         // setUserToken(result.data.token); 
@@ -49,6 +50,36 @@ const SignIn = () => {
         fetchUserData();
         // console.log("Token is -: ", result.data.token)
         navigate('/user');
+      } else if (result.message.startsWith("User not found with email")) {
+        alert("User not found. Please sign up first");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleMadLOG = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      email: formData.email,
+      password: formData.password
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/user/loggingout/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+      console.log('bukachuda', response)
+      console.log('Server response:', result);
+      if (result.message === "Logined Successfully") {
+        navigate('/login');
       } else if (result.message.startsWith("User not found with email")) {
         alert("User not found. Please sign up first");
       }

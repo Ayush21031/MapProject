@@ -73,12 +73,14 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
+
+
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
 
   return (
-    <UserContext.Provider value={{ userToken, userData, fetchUserData }}>
+    <UserContext.Provider value={{ userToken, userData, fetchUserData}}>
       {children}
     </UserContext.Provider>
   );

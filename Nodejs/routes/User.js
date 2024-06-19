@@ -113,6 +113,7 @@ const auth = (req, res, next) => {
 router.post('/login', userController.login);
 router.post('/register', userController.register);
 router.get('/userdetail', auth, userController.userdetail);
+router.post('/logout', userController.logout);
 
 exports.router = router;
 

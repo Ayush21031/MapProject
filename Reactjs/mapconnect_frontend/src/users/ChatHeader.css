@@ -21,6 +21,7 @@
   
   .person-chat-name {
     flex-grow: 1;
+    border: 0px;
   }
   
   .person-chat-name .person-chat-status {
@@ -30,5 +31,10 @@
   
   .person-chat-options {
     cursor: pointer;
+    border: 0px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    background-color: rgb(217, 53, 53)
   }
   

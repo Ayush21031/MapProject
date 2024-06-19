@@ -3,19 +3,23 @@
 .card {
     display: flex;
     align-items: center;
-    border: 1px solid #333;
+    /* border: 1px solid #333; */
     border-radius: 8px;
     padding: 10px;
     margin: 10px 0;
-    background-color: #1a1a1a;
-    color: #fff;
+    /* background-color: #1a1a1a; */
+    /* color: #fff; */
+    color: black;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 0px;
   }
+
   
   .card:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.086);
+    border: 0px;
   }
   
   .card:active {
@@ -62,7 +66,7 @@
     /* font-size: 24px; */
     font-weight: bold;
     margin: 0;
-    color: #fff;
+    color: black;
   }
   
   .top-msg {
