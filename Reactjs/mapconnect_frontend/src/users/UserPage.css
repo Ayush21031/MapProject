@@ -257,3 +257,33 @@
   .chat-left {
     align-self: flex-start;
   }
+
+  /* UserPage.css */
+
+.welcome-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 2rem;
+  color: #333;
+}
+
+/* Existing styles... */
+
+/* UserPage.css */
+
+.fade-out {
+  animation: fadeOut 0.2s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Existing styles... */

@@ -1,19 +1,12 @@
 import React from 'react';
-import "./userCard.css"
+import "./userCard.css";
 
-
-const UserCard = (props) => {
-  const handleClick = (contact_name) => {
-    alert(`You clicked on ${contact_name}`);
-  };
-
-  const { index, contact } = props;
-
+const UserCard = ({ index, contact, onClick }) => {
   return (
     <div
       key={index}
       className="card"
-      onClick={() => handleClick(contact.contact_name)}
+      onClick={() => onClick(contact)}
     >
       <div className="card-dp">
         {contact.dp ? (
