@@ -88,7 +88,8 @@ const io = new Server(server, {
 main().catch(err => console.log(err));
 
 async function main(){
-    await mongoose.connect('mongodb://localhost:27017/MapConnect');
+    // await mongoose.connect('mongodb://localhost:27017/MapConnect');
+    await mongoose.connect('mongodb+srv://ayush21031:ayushsachan02@cluster0.vdxug01.mongodb.net/MapConnect');
     console.log('connected to db')
 }
 

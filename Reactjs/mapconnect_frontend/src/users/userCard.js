@@ -23,7 +23,7 @@ const UserCard = (props) => {
         )}
       </div>
       <div className="card-details">
-        <h1 className="contact-name">{contact.contact_name}</h1>
+        <p className="contact-name">{contact.contact_name}</p>
         <small className="top-msg">{contact.topMsg}</small>
       </div>
     </div>
