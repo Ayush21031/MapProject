@@ -59,21 +59,26 @@ import SignUp from "./SignUp";
 import Home from "./Home";
 import UserPage from "./users/UserPage";
 import { UserProvider } from "./context/UserContext";
+import { ContactProvider } from "./context/ContactContext";
+import { MessageProvider } from "./context/MessageContext";
 
 const AppRoutes = () => {
   return (
     <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/user" element={<UserPage />} />
-        </Routes>
-      </Router>
+      <ContactProvider>
+        <MessageProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/user" element={<UserPage />} />
+            </Routes>
+          </Router>
+        </MessageProvider>
+      </ContactProvider>
     </UserProvider>
   );
 };
 
 export default AppRoutes;
-
