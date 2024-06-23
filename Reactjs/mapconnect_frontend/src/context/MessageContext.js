@@ -18,7 +18,7 @@ export const MessageProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ chat_id }),
+        body: JSON.stringify({ "chat_id":chat_id }),
         credentials: 'include'
       });
 

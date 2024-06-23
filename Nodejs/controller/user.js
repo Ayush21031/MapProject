@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const usermodel = require('../model/user');
+const chatmodel = require('../model/chat');
 const jwt = require('jsonwebtoken');
 const FileSystem = require('fs');
 const bcrypt = require('bcrypt');
@@ -67,6 +68,40 @@ exports.logout = (req, res) => {
 };
 
 
+exports.searchuser = (req, res) =>{
+    const email = req.body.email;
+    // list of all users in the database starts with email in user model
+    usermodel.userSchema.find({ email: { $regex: email, $options: 'i' } }).select(['email','firstName','lastName']).then((data) => {
+        res.send({"list":data});
+    }).catch((err) => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving users."
+        });
+    });
+}
+
+
+exports.addchat = (req, res) =>{
+    const participant1 = req.body.participant1;
+    const participant2 = req.body.participant2;
+    // console.log(participant1, participant2);
+    // res.send({"message":"Chat created successfully"});
+    const chat_id = participant1+participant2;
+    const chat = new chatmodel.chatSchema({
+        chat_id: chat_id,
+        participants: [participant1, participant2],
+    })
+    // res.send({"message":"Chat created successfully"});
+    chat.save().then((data)=>{
+        res.send({"message":"Chat created successfully"});
+    })
+    .catch((err) => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while creating chat."
+        });
+    });
+}
+
 exports.userdetail = (req, res) => {
 
     // console.log(req.email, "email requests logout");
@@ -80,6 +115,7 @@ exports.userdetail = (req, res) => {
     });
 };
 exports.getmsg = (req,res) =>{
+    console.log(req.body.chat_id);
     const sendMSG =  [
         {
           _id: "m1",
@@ -99,7 +135,7 @@ exports.getmsg = (req,res) =>{
           _id: "m1",
           chat_id: "chat_01",
           sender: "madhur@gmail.com",
-          msg: "How are you buddy!!!",
+          msg: "How are",
           date_time: "12:03:00"
         },
         {
@@ -140,11 +176,12 @@ exports.getmsg = (req,res) =>{
         },
       ]
     console.log(
-        "reqMSG:", req.chat_id
+        "reqMSG:", req.body.chat_id
     )
     res.send(sendMSG);
 }
 exports.getcontact = (req,res) => {
+    console.log(req.body);
     const sendChat = [
         {
             "chat_id": "chat_01",
@@ -298,7 +335,7 @@ exports.getcontact = (req,res) => {
       },
       ]
     console.log(
-        "reqMSG:", req.email
+        "reqMSG:", req.body.email
     )
     res.send(sendChat);
 }

@@ -39,15 +39,27 @@ import { IoMdClose } from "react-icons/io";
 import { person_data } from "./data";
 import SearchPersonCard from "./SearchPersonCard";
 
+
 const AddPersonPopup = ({ onClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  const handleSearch = () => {
-    const results = person_data.filter(person =>
-      person.name.toLowerCase().startsWith(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
+  const handleSearch = async () => {
+    // const results = person_data.filter(person =>
+    //   person.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+    // );
+    // setSearchResults(results);
+    const userlist = await fetch('http://localhost:3000/user/searchuser/',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ "email":searchTerm }),
+    })
+
+    const response = await userlist.json();
+    // console.log('Search Results:', response);
+    setSearchResults(response.list);
   };
 
   return (

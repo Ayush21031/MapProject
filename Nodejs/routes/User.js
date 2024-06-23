@@ -31,6 +31,8 @@ router.get('/userdetail', auth, userController.userdetail);
 router.post('/logout', userController.logout);
 router.post('/getmsg', userController.getmsg);
 router.post('/getcontact', userController.getcontact);
+router.post('/searchuser', userController.searchuser);
+router.post('/addchat', userController.addchat);
 
 exports.router = router;
 
