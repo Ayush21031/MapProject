@@ -4,7 +4,7 @@ import "./ChatBubble.css";
 const ChatBubble = (props) => {
   const chat = props.chats;
   const selectedUser = props.curr_chat;
-  const thisUser = "madhur@gmail.com";
+  const thisUser = props.thisUser
   const isSenderThisUser = chat.sender === thisUser;
   console.log(
     "chat.chat_id:", 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState , useCallback} from "react";
 import { UserContext } from "../context/UserContext";
 import { ContactContext } from "../context/ContactContext";
 import { MessageContext } from "../context/MessageContext";
@@ -17,12 +17,35 @@ import { IoSend } from "react-icons/io5";
 const UserPage = () => {
   const { userData, fetchUserData } = useContext(UserContext);
   const { contacts, fetchContacts } = useContext(ContactContext);
-  const { messages, fetchMessages } = useContext(MessageContext);
+  const { messages, fetchMessages} = useContext(MessageContext);
+  const [msg, setmsg] = useState('');
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFading, setIsFading] = useState(false);
 
+  const addMsg = useCallback( async (chat_id, sender, msg, date_time) =>{
+    try {
+      const res = await fetch('http://localhost:3000/user/addmsg/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "chat_id":chat_id, "sender":sender, "msg":msg, "date_time":date_time }),
+        credentials: 'include'
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  
+  }) 
+
+  
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
@@ -51,6 +74,11 @@ const UserPage = () => {
     setShowPopup(false);
   };
 
+  const handleChange = (e) => {
+    setmsg(e.target.value);
+  };
+
+
   if (!userData) {
     return <div>Loading...</div>;
   }
@@ -71,6 +99,8 @@ const UserPage = () => {
     }, 500);
   };
 
+  
+
   const thisUser = userData.email;
   console.log('This User:', thisUser);
 
@@ -90,10 +120,7 @@ const UserPage = () => {
       console.error('Error logging out:', error);
     }
   };
-    const filteredAndSortedChats = contacts
-    .filter(chat => chat.participants.includes(thisUser))
-    .sort((a, b) => new Date(` ${a.time}`) - new Date(` ${b.time}`));
-
+  const filteredAndSortedChats = contacts
   const contacts_new = filteredAndSortedChats.map(chat => {
     const participant = chat.participants.find(email => email !== thisUser);
     return {
@@ -103,6 +130,16 @@ const UserPage = () => {
       topMsg: chat.time
     };
   });
+  const handleSend = () =>{
+    const chat_id = selectedUser.chat_id;
+    const sender = thisUser;
+    // const msg = document.querySelector('.input-message').value;
+    const msg_user = msg;
+    setmsg('');
+    const date_time = new Date().toISOString();
+    addMsg(chat_id, sender, msg_user, date_time);
+    // document.querySelector('.input-message').value = '';
+  }
 
   return (
     <div className="main-div">
@@ -136,7 +173,7 @@ const UserPage = () => {
             />
             <div className={`person-chat-view ${isFading ? 'fade-out' : ''}`}>
               {messages.map((chat, index) => (
-                <ChatBubble key={index} chats={chat} curr_chat={selectedUser} />
+                <ChatBubble key={index} chats={chat} thisUser= {thisUser} curr_chat={selectedUser} />
               ))}
             </div>
             <div className="person-chat-input">
@@ -144,8 +181,13 @@ const UserPage = () => {
                 type="text"
                 placeholder="Type a message"
                 className="input-message"
+                value = {msg}
+                onChange={handleChange}
+                required
               />
-              <button className="send-button">
+              <button className="send-button" onClick = {
+                handleSend
+              }>
                 <IoSend />
               </button>
             </div>

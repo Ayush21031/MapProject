@@ -20,7 +20,7 @@ export const ContactProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ "email":email }),
+        body: JSON.stringify({ "sender":email }),
         credentials: 'include'
       });
       

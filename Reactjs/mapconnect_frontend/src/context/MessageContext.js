@@ -34,9 +34,31 @@ export const MessageProvider = ({ children }) => {
     }
   }, []);
 
+  const addMsg = useCallback( async (chat_id, sender, msg, date_time) =>{
+    try {
+      const res = await fetch('http://localhost:3000/user/addmsg/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "chat_id":chat_id, "sender":sender, "msg":msg, "date_time":date_time }),
+        credentials: 'include'
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  
+  }) 
+
   return (
     <MessageContext.Provider value={{ messages, loading, error, fetchMessages }}>
       {children}
     </MessageContext.Provider>
   );
 };
+

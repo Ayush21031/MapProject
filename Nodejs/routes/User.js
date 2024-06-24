@@ -33,6 +33,7 @@ router.post('/getmsg', userController.getmsg);
 router.post('/getcontact', userController.getcontact);
 router.post('/searchuser', userController.searchuser);
 router.post('/addchat', userController.addchat);
+router.post('/addmsg', userController.addMsg);
 
 exports.router = router;
 
