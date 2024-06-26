@@ -107,17 +107,48 @@ app.get('/', (req, res) => {
 app.use('/user', user_routes.router);
 app.use('/room', room_routes.router);
 
+const onlineuser = []
+
+
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected successfully`);
-    socket.on('join-room', (roomid) => {
-        socket.join(roomid);
-        socket.to(roomid).emit('message', `Hello everyone! from ${socket.id}`);
-        console.log(`${socket.id} joined room ${roomid}`);
-    });
+    const userEmail = socket.handshake.query.email;
 
-    socket.on('message', ({roomid, message}) => {
-        socket.to(roomid).emit('message', message);
+    const userIndex = onlineuser.findIndex(user => user.email === userEmail);
+
+    if (userIndex !== -1) {
+        // Update existing user's socket_id
+        onlineuser[userIndex].socket_id = socket.id;
+    } else {
+        // Add new user
+        onlineuser.push({ email: userEmail, socket_id: socket.id });
+    }
+    console.log(onlineuser);
+
+    socket.on('send_message', ({chat_id, sender, msg, date_time, contact_name}) => {
+        const receiver = onlineuser.find(user => user.email === contact_name);
+        if (receiver) {
+            io.to(receiver.socket_id).emit('new_message', { chat_id, msg, sender, date_time });
+        }
     });
+    // socket.on('join-room', (roomid) => {
+    //     socket.join(roomid);
+    //     socket.to(roomid).emit('message', `Hello everyone! from ${socket.id}`);
+    //     console.log(`${socket.id} joined room ${roomid}`);
+    // });
+
+    // socket.on('message', ({roomid, message}) => {
+    //     socket.to(roomid).emit('message', message);
+    // });
+});
+
+io.on('disconnect', (socket) => {
+    console.log(`${socket.id} disconnected`);
+    const userIndex = onlineuser.findIndex(user => user.socket_id === socket.id);
+    if (userIndex !== -1) {
+        onlineuser.splice(userIndex, 1);
+    }
+    console.log(onlineuser);
 });
 
 server.listen(3000, () => {

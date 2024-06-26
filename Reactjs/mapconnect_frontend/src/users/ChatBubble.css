@@ -11,13 +11,13 @@
   .chat-left {
     background-color: #f1f1f1;
     color: #000;
-    align-self: flex-start;
+    align-self: flex-end;
   }
   
   .chat-right {
     background-color: #007bff;
     color: #fff;
-    align-self: flex-end;
+    align-self: flex-start;
   }
   
   .chat-sender {

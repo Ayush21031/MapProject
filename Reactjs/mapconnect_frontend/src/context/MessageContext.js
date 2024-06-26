@@ -56,7 +56,7 @@ export const MessageProvider = ({ children }) => {
   }) 
 
   return (
-    <MessageContext.Provider value={{ messages, loading, error, fetchMessages }}>
+    <MessageContext.Provider value={{ messages, loading, error, fetchMessages, setMessages }}>
       {children}
     </MessageContext.Provider>
   );
