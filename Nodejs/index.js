@@ -131,15 +131,23 @@ io.on('connection', (socket) => {
             io.to(receiver.socket_id).emit('new_message', { chat_id, msg, sender, date_time });
         }
     });
-    // socket.on('join-room', (roomid) => {
-    //     socket.join(roomid);
-    //     socket.to(roomid).emit('message', `Hello everyone! from ${socket.id}`);
-    //     console.log(`${socket.id} joined room ${roomid}`);
-    // });
 
-    // socket.on('message', ({roomid, message}) => {
-    //     socket.to(roomid).emit('message', message);
-    // });
+    socket.on('incognito_mode_on',({from, to})=>{
+        console.log('incognito_mode_on'+'from '+from+' to '+to)
+        const receiver = onlineuser.find(user => user.email === to);
+        if (receiver) {
+            io.to(receiver.socket_id).emit('incognito_mode_on', {from});
+        }
+    })
+
+    socket.on('incognito_mode_off',({from, to})=>{
+        console.log('incognito_mode_off'+'from '+from+' to '+to)
+        const receiver = onlineuser.find(user => user.email === to);
+        if (receiver) {
+            io.to(receiver.socket_id).emit('incognito_mode_off', {from});
+        }
+    })
+    
 });
 
 io.on('disconnect', (socket) => {

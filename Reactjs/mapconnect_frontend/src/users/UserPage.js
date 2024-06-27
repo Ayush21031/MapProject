@@ -14,6 +14,7 @@ import AddPersonPopup from "./AddPersonPopup";
 import Cookies from "js-cookie";
 import { IoSend } from "react-icons/io5";
 import io from 'socket.io-client';
+import UserOptions from "./UserOptions";
 
 const UserPage = () => {
   const { userData, fetchUserData } = useContext(UserContext);
@@ -26,6 +27,8 @@ const UserPage = () => {
   const [isFading, setIsFading] = useState(false);
   const [socket, setSocket] = useState(null);
   const chatViewRef = useRef(null);
+  const [showoptions, setshowoptions] = useState(false);
+  const [incognitoModes, setIncognitoModes] = useState({});
 
   const scrollToBottom = useCallback(() => {
     if (chatViewRef.current) {
@@ -47,25 +50,34 @@ const UserPage = () => {
   }, []);
 
   const addMsg = useCallback(async (chat_id, sender, msg, date_time) => {
-    try {
-      const res = await fetch('http://localhost:3000/user/addmsg/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ "chat_id": chat_id, "sender": sender, "msg": msg, "date_time": date_time }),
-        credentials: 'include'
-      });
-
-      const data = await res.json();
+    if(incognitoModes[chat_id] && incognitoModes[chat_id] === true){
+      // console.log('Incognito mode enabled for this chat!');
       setMessages([...messages, { chat_id, msg, sender, date_time }]);
       scrollToBottom();
-      socket.emit('send_message', { chat_id, sender, msg, date_time, contact_name: selectedUser.contact_name })
-      if (!res.ok) {
-        throw new Error(data.detail);
+      socket.emit('send_message', { chat_id, sender, msg , date_time, contact_name: selectedUser.contact_name })
+    }
+    else{
+
+      try {
+        const res = await fetch('http://localhost:3000/user/addmsg/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ "chat_id": chat_id, "sender": sender, "msg": msg, "date_time": date_time }),
+          credentials: 'include'
+        });
+  
+        const data = await res.json();
+        setMessages([...messages, { chat_id, msg, sender, date_time }]);
+        scrollToBottom();
+        socket.emit('send_message', { chat_id, sender, msg, date_time, contact_name: selectedUser.contact_name })
+        if (!res.ok) {
+          throw new Error(data.detail);
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
     }
 
   })
@@ -88,18 +100,68 @@ const UserPage = () => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // useEffect(() => {
+  //   if (socket) {
+
+  //     socket.on('new_message', ({ chat_id, msg, sender, date_time }) => {
+  //       if (selectedUser && selectedUser.chat_id === chat_id) {
+  //         // fetchMessages(chat_id);
+  //         setMessages([...messages, { chat_id, msg, sender, date_time }]);
+  //         scrollToBottom();
+  //       }
+  //     });
+
+  //     socket.on('incognito_mode_on', ({ from }) => {
+  //       incognitoModes[from] = true;
+  //       console.log('Incognito mode enabled for this chat!')
+  //       console.log('value of incognitoModes');
+  //       //print the value of incognitoModes
+  //       console.log(incognitoModes);
+  //     })
+
+  //     socket.on('incognito_mode_off', ({ from }) => {
+  //       incognitoModes[from] = false;
+  //       console.log('Incognito mode disabled for this chat!')
+  //       console.log('value of incognitoModes')
+  //       console.log(incognitoModes);
+  //     })
+  //   }
+  // })
+
+
   useEffect(() => {
     if (socket) {
-
       socket.on('new_message', ({ chat_id, msg, sender, date_time }) => {
         if (selectedUser && selectedUser.chat_id === chat_id) {
-          // fetchMessages(chat_id);
-          setMessages([...messages, { chat_id, msg, sender, date_time }]);
+          setMessages(prevMessages => [...prevMessages, { chat_id, msg, sender, date_time }]);
           scrollToBottom();
         }
       });
+  
+      socket.on('incognito_mode_on', ({ from }) => {
+        setIncognitoModes(prevModes => ({
+          ...prevModes,
+          [selectedUser.chat_id]: true
+        }));
+        console.log('Incognito mode enabled for this chat!');
+      });
+  
+      socket.on('incognito_mode_off', ({ from }) => {
+        setIncognitoModes(prevModes => ({
+          ...prevModes,
+          [selectedUser.chat_id]: false
+        }));
+        console.log('Incognito mode disabled for this chat!');
+      });
+  
+      return () => {
+        socket.off('new_message');
+        socket.off('incognito_mode_on');
+        socket.off('incognito_mode_off');
+      };
     }
-  })
+  }, [socket, selectedUser]);
+  
 
   useEffect(() => {
     fetchUserData();
@@ -126,9 +188,17 @@ const UserPage = () => {
     setShowPopup(true);
   };
 
+  const handleshowoptionsfunc = () => {
+    setshowoptions(true);
+  }
+
   const handleClosePopup = () => {
     setShowPopup(false);
   };
+
+  const handleCloseOptions = () => {
+    setshowoptions(false);
+  }
 
   const handleChange = (e) => {
     setmsg(e.target.value);
@@ -149,14 +219,61 @@ const UserPage = () => {
     return null;
   }
 
+  // const handleUserCardClick = (contact) => {
+  //   setIsFading(true);
+  //   setTimeout(() => {
+  //     setSelectedUser(contact);
+  //     setIsFading(false);
+  //   }, 500);
+  // };
   const handleUserCardClick = (contact) => {
     setIsFading(true);
     setTimeout(() => {
       setSelectedUser(contact);
       setIsFading(false);
+      // Reset incognito mode when switching to a different chat
+      if (!incognitoModes[contact.chat_id]) {
+        setIncognitoModes(prevModes => ({
+          ...prevModes,
+          [contact.chat_id]: false
+        }));
+      }
     }, 500);
   };
 
+
+  // const handleToggleIncognito = () => {
+  //   if (selectedUser) {
+  //     setIncognitoModes(prevModes => ({
+  //       ...prevModes,
+  //       [selectedUser.chat_id]: !prevModes[selectedUser.chat_id]
+  //     }));
+  //     if(incognitoModes[selectedUser.chat_id] && incognitoModes[selectedUser.chat_id] === true){
+  //       // console.log('Incognito mode enabled for this chat!');
+  //       socket.emit("incognito_mode_on", { from: userData.email, to: selectedUser.contact_name })
+  //     }
+  //     else{
+  //       socket.emit("incognito_mode_off", { from: userData.email, to: selectedUser.contact_name })
+  //     }
+  //   }
+  // };
+
+  const handleToggleIncognito = () => {
+    if (selectedUser) {
+      const newIncognitoStatus = !incognitoModes[selectedUser.chat_id];
+      setIncognitoModes(prevModes => ({
+        ...prevModes,
+        [selectedUser.chat_id]: newIncognitoStatus
+      }));
+      
+      if (newIncognitoStatus) {
+        socket.emit("incognito_mode_on", { from: userData.email, to: selectedUser.contact_name });
+      } else {
+        socket.emit("incognito_mode_off", { from: userData.email, to: selectedUser.contact_name });
+      }
+    }
+  };
+  
 
 
   const thisUser = userData.email;
@@ -188,6 +305,7 @@ const UserPage = () => {
       topMsg: chat.time
     };
   });
+  
   const handleSend = () => {
     const chat_id = selectedUser.chat_id;
     const sender = thisUser;
@@ -198,6 +316,7 @@ const UserPage = () => {
     addMsg(chat_id, sender, msg_user, date_time);
     // document.querySelector('.input-message').value = '';
   }
+
 
   return (
     <div className="main-div">
@@ -228,12 +347,8 @@ const UserPage = () => {
               profilePic={selectedUser.profilePic}
               name={selectedUser.contact_name}
               status={selectedUser.status}
+              setoptions = {handleshowoptionsfunc}
             />
-            {/* <div className={`person-chat-view ${isFading ? 'fade-out' : ''}`}>
-              {messages.map((chat, index) => (
-                <ChatBubble key={index} chats={chat} thisUser= {thisUser} curr_chat={selectedUser} />
-              ))}
-            </div> */}
             <div ref={chatViewRef} className={`person-chat-view ${isFading ? 'fade-out' : ''}`}>
               {messages.map((chat, index) => (
                 <ChatBubble key={index} chats={chat} thisUser={thisUser} curr_chat={selectedUser} />
@@ -262,6 +377,14 @@ const UserPage = () => {
         )}
       </div>
       {showPopup && <AddPersonPopup onClose={handleClosePopup} />}
+      {showoptions && (
+        <UserOptions 
+          onClose={handleCloseOptions} 
+          isIncognito={selectedUser ? (incognitoModes[selectedUser.chat_id] || false) : false}
+          onToggleIncognito={handleToggleIncognito}
+          // socket={socket}
+        />
+      )}
     </div>
   );
 };

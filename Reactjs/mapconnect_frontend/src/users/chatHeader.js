@@ -2,7 +2,13 @@ import React from 'react';
 import { CgOptions } from 'react-icons/cg';
 import "./ChatHeader.css";
 
-const ChatHeader = ({ profilePic, name, status }) => {
+const ChatHeader = ({ profilePic, name, status, setoptions }) => {
+
+  // const handleoptionclick = () => {
+  //   setoptions();
+  // };
+
+
   return (
     <div className="person-chat-header">
       <div className="person-profile-pic">
@@ -12,9 +18,9 @@ const ChatHeader = ({ profilePic, name, status }) => {
         {name}
         <div className="person-chat-status">{status}</div>
       </div>
-      <div className="person-chat-options">
+      <button className="person-chat-options" onClick={setoptions}>
         <CgOptions />
-      </div>
+      </button>
     </div>
   );
 };
