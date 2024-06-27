@@ -206,6 +206,7 @@
     width: 100%;
     /* border: 2px solid black; */
     height: 80vh;
+    max-height: 80vh;
     overflow: auto;
     padding: 3px;
     scrollbar-width: thin;
